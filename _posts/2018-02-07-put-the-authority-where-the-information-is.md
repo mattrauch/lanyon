@@ -1,0 +1,12 @@
+---
+title: Put The Authority Where the Information Is
+layout: post
+---
+
+![Factory]({{ "/assets/factory.jpg" | absolute_url }})
+
+You may already be familiar with David Marquet, author of [Turn the Ship Around!: A True Story of Turning Followers Into Leaders](http://www.amazon.com/Turn-Ship-Around-Turning-Followers/dp/1591846404). Marquet is popular among the lean crowd for his perspective on empowerment — one of the most misunderstood concepts in business management. One of Marquet’s more significant concepts is the idea of “putting the authority where the information is”. Many times management attempts to “empower” employees and instead overburden low-level employees with driving change without any direction. In Marquet’s talk on [“Greatness”](https://www.youtube.com/watch?v=OqmdLcyES_Q), he highlights how empowering his crew helped drive excellence.
+
+By pushing the critical thinking and ownership of the decision to the doer, Marquet explains how he was able to deploy his submarine successfully by “vowing never again to give an order”. This idea of pushing employees to be decisive and take ownership rings loud with Marquet’s promise. This difference is how Marquet continued to challenge his crew to apply critical thinking to their decisions and bring a more global perspective to the impact of their decisions. What we see is the subtle difference between coaching and ordering, and how coaching develops instead of directing.
+
+Empowering is often misunderstood to be simply placing the responsibility in another person’s hand. This type of leadership results in the action usually being mismanaged altogether due to the lack of direction and oversight from the manager and the new owner. Managers may have the expectation that by simply pushing the responsibility to a lower level along with an explicit gesture of trust and transfer of ownership, that person will immediately engage and work to own the solution. While this may be the case with some atypically independent workers, the lack of coaching will generally lead to the action being ignored by both the manager and owner. It’s important to understand the two-way problem-solving conversation that occurs between a coach and student is the key to growing independence and driving continuous improvement in your workforce. Shifting responsibilities under the guise of “empowerment” will be more of a Darwinian experiment than growth exercise for an organization.
