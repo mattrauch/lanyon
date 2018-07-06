@@ -1,6 +1,7 @@
 ---
 title: Little's Law
 layout: post
+mathjax: true
 ---
 
 Every factory I've ever worked at or been to has had one thing in common: the perception that there wasn't enough space. I say *perception* because this is really more of a perspective than a statement of fact. The average workstation is generally cluttered with all sorts of things that aren't needed for the process. A fix for this is generally 5S (which I would recommend as a great first pass), but the engineers among us will desire a more scientific approach to de-cluttering the workstation.
