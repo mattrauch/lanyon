@@ -1,6 +1,6 @@
 ---
 title: Little's Law
-layout: default
+layout: post
 mathjax: true
 ---
 
