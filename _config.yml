@@ -4,7 +4,7 @@
 permalink:           pretty
 
 markdown:         kramdown
-highlighter:      pygments
+highlighter:      rouge
 
 # Setup
 title:               Factory Intelligence
