@@ -3,6 +3,9 @@
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 
+markdown:         redcarpet
+highlighter:      pygments
+
 # Setup
 title:               Factory Intelligence
 tagline:             'Using data science to improve manufacturing'
