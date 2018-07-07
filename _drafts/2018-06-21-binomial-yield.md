@@ -4,12 +4,11 @@ title: Yield, Sample Size, and the Binomial Distribution
 
 ![Coin]({{ "/assets/cointoss.jpg" | absolute_url }})
 
+You've just finished off a process improvement and you are ready to see if the new process meets the yield that you need to close out the project. The question is, how many runs are needed in order to get a representative take on the actual process yield? Some may say 30, others may say 100, your boss may only want 10 to get the line back up, but what is the correct answer?
 
-$$\text{Yield}=\frac{\text{Passing Units}}{\text{Total Units Tested}}$$
+As always, we can use statistics to get a good number on what the actual yield is—with the right sample size, that is. In order to figure out this problem, we will be using the binomial distribution to calculate the the number of events requiqed, $n$, to observe $\text{Yield} \geq X$ given a certain probability. If you're familiar with the binomial distribution, you'll see how yield, a metric with binomial outcomes, can be modeled using this distribution.
 
-Seems simple enough, yet we often don't think to calculate sample size in this scenario. Statistically, if we don't calculate the correct sample size, there could be a chance that we could miss the true population yield and falsely conclude that the population doesn't meet our expectation. This is a little complicated in theory, but the following example should clear up any confusion.
-
-Before jumping into the example, yield can be modeled using the binomial distribution. The binomial distribution with parameters $n$ and $p$ is the discrete probability distribution of the number of successes in a sequence of $n$ independent experiments, each asking a yes–no question, and each with its own boolean-valued outcome[^1]. The classic example of the binomial distribution is flipping a coin 50 times, with the chance of getting heads modeled. In this situation, $n$ is 50, since it is the number of events, and $p=0.5$ since there is a $50%$ chance of getting heads. We can generate the distribution using the following code in python
+Here's a quick 101 on our distribution. The binomial distribution with parameters $n$ and $p$ is the discrete probability distribution of the number of successes in a sequence of $n$ independent experiments, each with its own boolean-valued indepentent outcome[^1]. THis is a fancy way of saying that the binomial distribution models events that can only have two outcomes: A or B. Let's look at an example with a little Python.
 
 ~~~Python
 %matplotlib inline
@@ -37,7 +36,7 @@ Let's say we wanted to make sure this coin was fair, and we would consider this 
 binom.pmf(25,50,0.5)
 ~~~
 
-We would calculate this probability to be $p\sim 0.11$—not very high probability, even with a sample size ($n$) of $50$!
+We would calculate this probability to be $p\sim 0.11$—not very high probability, even with a sample size $n=50$!
 
 
 [^1] "Binomial Distribution". Wikipedia: The free encyclopedia. (2018, June 21). FL: Wikimedia Foundation, Inc. Retrieved August 10, 2004, from https://www.wikipedia.org
