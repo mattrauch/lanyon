@@ -22,6 +22,7 @@
       <div class="container content">
           {% include mathjax.html %}
         {{ content }}
+        {% include mathjax.html %}
       </div>
     </div>
 
@@ -46,5 +47,5 @@
     </script>
   </body>
 </html>
-
+{% include mathjax.html %}
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "AMS" } } }); </script>
