@@ -8,7 +8,7 @@ Every factory I've ever worked at or been to has had one thing in common: the pe
 
 The answer to this is a little-known (no pun intended) theorem called Little's Law. This theorem, thought-up by John Little, originally modeled the long-term average number $$ L $$ of customers in a stationary system, stating it is equal to the long-term average effective arrival rate $$ \lambda $$ multiplied by the average time $$ W $$ that a customer spends in the system. This can be expressed as [^fn1]:
 
-$$$$L=\lambda W $$$$ 
+$$L=\lambda W $$
 
 Little’s Law is also a general term for any sort of formula or theorem taking on the form $$ Y=XZ $$. Since we aren’t looking at queuing theory, Little’s Law in the manufacturing context is where $$ \text{WIP} $$ is work in process, $$ \text{TH} $$ is throughput, and $$ \text{CT} $$ is the average cycle time. Some quick thought experiments can validate this theory. Holding $$ \text{TH} $$ constant, if $$ \text{CT} $$ increases, we expect $$ \text{WIP} $$ to increase as well. Leveraging this, we can begin to model ideal scenarios given actual process information. In today's post, we will focus on the relationship between $$ \text{TH} $$ and $$ \text{WIP} $$, although $$ \text{CT} $$ can be modeled in the same fashion[^fn2].
 
