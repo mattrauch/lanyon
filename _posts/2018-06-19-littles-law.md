@@ -6,11 +6,11 @@ mathjax: true
 
 Every factory I've ever worked at or been to has had one thing in common: the perception that there wasn't enough space. I say *perception* because this is really more of a perspective than a statement of fact. The average workstation is generally cluttered with all sorts of things that aren't needed for the process. A fix for this is generally 5S (which I would recommend as a great first pass), but the engineers among us will desire a more scientific approach to de-cluttering the workstation.
 
-The answer to this is a little-known (no pun intended) theorem called Little's Law. This theorem, thought-up by John Little, originally modeled the long-term average number $L$ of customers in a stationary system, stating it is equal to the long-term average effective arrival rate $$ \lambda $$ multiplied by the average time $W$ that a customer spends in the system. This can be expressed as [^fn1]:
+The answer to this is a little-known (no pun intended) theorem called Little's Law. This theorem, thought-up by John Little, originally modeled the long-term average number $$ L $$ of customers in a stationary system, stating it is equal to the long-term average effective arrival rate $$ \lambda $$ multiplied by the average time $$ W $$ that a customer spends in the system. This can be expressed as [^fn1]:
 
-$$L=\lambda W $$ 
+$$$$L=\lambda W $$$$ 
 
-Little’s Law is also a general term for any sort of formula or theorem taking on the form $Y=XZ$. Since we aren’t looking at queuing theory, Little’s Law in the manufacturing context is where $\text{WIP}$ is work in process, $\text{TH}$ is throughput, and $\text{CT}$ is the average cycle time. Some quick thought experiments can validate this theory. Holding $\text{TH}$ constant, if $\text{CT}$ increases, we expect $\text{WIP}$ to increase as well. Leveraging this, we can begin to model ideal scenarios given actual process information. In today's post, we will focus on the relationship between $\text{TH}$ and $\text{WIP}$, although $\text{CT}$ can be modeled in the same fashion.
+Little’s Law is also a general term for any sort of formula or theorem taking on the form $$ Y=XZ $$. Since we aren’t looking at queuing theory, Little’s Law in the manufacturing context is where $$ \text{WIP} $$ is work in process, $$ \text{TH} $$ is throughput, and $$ \text{CT} $$ is the average cycle time. Some quick thought experiments can validate this theory. Holding $$ \text{TH} $$ constant, if $$ \text{CT} $$ increases, we expect $$ \text{WIP} $$ to increase as well. Leveraging this, we can begin to model ideal scenarios given actual process information. In today's post, we will focus on the relationship between $$ \text{TH} $$ and $$ \text{WIP} $$, although $$ \text{CT} $$ can be modeled in the same fashion[^fn2].
 
 $$\text{WIP} = \text{TH} \times \text{CT}$$
 
@@ -29,8 +29,7 @@ np.random.seed(1234) # set seed
 process = np.random.randint(101, size=(1, 6))
 # process = [18,59,30,21,78,10] 
 ~~~
-Upon execution, our random process gives us `array([[47, 83, 38, 53, 76, 24]])`. Now we need to define some variables. Before we start, we have four that are part of the formulae and one that will be used to figure out a range of WIP levels to use. The first variable is $T_0$, which is the raw cycle time for the entire process. Next is $r_b$, which is the bottleneck rate, or the slowest process divided by $T_0$. Next is our critical WIP level, $W_0$. This is the WIP level at which a line, with no variability in
-process times, that achieves maximum throughput ($r_b$) with minimum cycle time ($T_0$). The formula is $W_0=r_bT_0$. Then we have our worst-case throughput, or $TH_w$. This is a constant and is defined as $\frac{1}{T_0}$. The last variable is the max range of WIP we want to model. Because our $TH_{pwc}$ never converges with $TH_b$, we will go with 25 times $W_0$, which will give us room to fit most real-life scenarios and context for the full chart.
+Upon execution, our random process gives us `array([[47, 83, 38, 53, 76, 24]])`. Now we need to define some variables. Before we start, we have four that are part of the formulae and one that will be used to figure out a range of WIP levels to use. More details can be found about the following formulas in *Factory Physics*[^fn2]. The first variable is $$ T_0 $$, which is the raw cycle time for the entire process. Next is $$ r_b $$, which is the bottleneck rate, or the slowest process divided by $$ T_0 $$. Next is our critical WIP level, $$ W_0 $$. This is the WIP level at which a line, with no variability in process times, that achieves maximum throughput $$ r_b $$ with minimum cycle time $$ T_0 $$. The formula is $$ W_0=r_bT_0 $$. Then we have our worst-case throughput, or $$ TH_w $$. This is a constant and is defined as $$ \frac{1}{T_0} $$. The last variable is the max range of WIP we want to model. Because our $$ TH_{pwc} $$ never converges with $$ TH_b $$, we will go with 25 times $$ W_0 $$, which will give us room to fit most real-life scenarios and context for the full chart.
 
 ~~~python
 # define variables
@@ -41,7 +40,7 @@ THw = 1/T0
 maxw = int(w0*25)
 ~~~
 
-After setting up our variables, we can initialize our arrays. We will want to draw three different lines in a single chart to model $\text{TH}$ in three different ways: best case (full bottleneck speed), worst case ($1/T_0$), and the practical worse case, which gives us a threshold that should generalize to reality where the line between good and bad is.
+After setting up our variables, we can initialize our arrays. We will want to draw three different lines in a single chart to model $$ \text{TH} $$ in three different ways: best case (full bottleneck speed), worst case $$ 1/T_0 $$, and the practical worse case, which gives us a threshold that should generalize to reality where the line between good and bad is.
 
 ~~~python
 # setup arrays for each line in the plot
@@ -51,8 +50,7 @@ THw =[] # worst case throughput
 THb = [] # best case throughput
 ~~~
 
-The last step before the results is to iteratively calculate 
-the throughput values. Python and R (or any other language for that matter) can handle this task much more elegantly than say, Microsoft Excel because we can store our results as arrays and simply graph them in a single chart. With this step, we introduce three new formulas.
+The last step before the results is to iteratively calculate the throughput values. Python and R (or any other language for that matter) can handle this task much more elegantly than say, Microsoft Excel because we can store our results as arrays and simply graph them in a single chart. With this step, we introduce three new formulas.
 
 $$\text{TH}_{pwc}=\frac{w}{w_0+w-1}r_b$$
 
@@ -139,3 +137,5 @@ lines(wip, THb, col="green", lty=3)
 
 
 [^fn1]: Simchi-Levi, D.; Trick, M. A. (2013). "Introduction to "Little's Law as Viewed on Its 50th Anniversary"". Operations Research. 59 (3): 535. doi:10.1287/opre.1110.0941.
+
+[^fn2]: Hopp, W. J., & Spearman, M. L. (2011). Factory physics. Waveland Press.
