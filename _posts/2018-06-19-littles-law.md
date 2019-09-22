@@ -6,7 +6,7 @@ mathjax: true
 
 Every factory I've ever worked at or been to has had one thing in common: the perception that there wasn't enough space. I say *perception* because this is really more of a perspective than a statement of fact. The average workstation is generally cluttered with all sorts of things that aren't needed for the process. A fix for this is generally 5S (which I would recommend as a great first pass), but the engineers among us will desire a more scientific approach to de-cluttering the workstation.
 
-The answer to this is a little-known (no pun intended) theorem called Little's Law. This theorem, thought-up by John Little, originally modeled the long-term average number $L$ of customers in a stationary system, stating it is equal to the long-term average effective arrival rate $\lambda$ multiplied by the average time $W$ that a customer spends in the system. This can be expressed as [^fn1]:
+The answer to this is a little-known (no pun intended) theorem called Little's Law. This theorem, thought-up by John Little, originally modeled the long-term average number $L$ of customers in a stationary system, stating it is equal to the long-term average effective arrival rate \( \lambda \) multiplied by the average time $W$ that a customer spends in the system. This can be expressed as [^fn1]:
 
 $$L=\lambda W $$ 
 
