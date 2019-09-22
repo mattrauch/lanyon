@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Approximation
+mathjax: true
 ---
 
 I recently took a Project Management Professional (PMP) course that covered cost and schedule estimation. According to Project Management Insitute's (PMI) Project Management Body of Knowledge (PMBOK), statistically based estimate methods can be either parametric estimation or three-point estimate[^fn1].
@@ -23,15 +24,17 @@ For the PERT methodology, the text suggest estimating parameters to produce a be
 
 What wasn't clear to me was how to bridge the gap between using parametric estimators to characterize asymetric distributions. After some research, I ran into a risk-estimating site (Riskamp.com) which dove a little deeper into what was going on here.
 
-As it turns out, the PERT methodology uses a beta distribution function to smooth out this three point estimate into a normal-ish distibution or a lognormal distribution[^fn2]. It does this by taking the three paramaters and using them to define $\nu$ and $w$, the shape parameters used to create the beta smoothing.
+As it turns out, the PERT methodology uses a beta distribution function to smooth out this three point estimate into a normal-ish distibution or a lognormal distribution[^fn2]. It does this by taking the three paramaters and using them to define $v$ and $w$, the shape parameters used to create the beta smoothing.
 
 $$ \mu = \frac{x_O + \lambda x_L+x_P }{\lambda + 2} $$
 
-Where $x_O$ is the optimistic estimate, $x_L$ is the most likely, and $x_P$ is the pessimistic estimate.
+Where $x_O$ is the optimistic estimate, $x_L$ is the most likely, and $x_P$ is the pessimistic estimate. And $\lambda$ is a somewhat arbitrary constant used to concentrate probability at the most likely parameter (usually, $\lambda = 4$). 
 
 This is then plugged into the beta paramters to build a smooth distibution with a peak around the most likely estimate.
 
-$$ \nu = \frac{x_O + \lambda x_L+x_P }{\lambda + 2} $$
+$$ v = \frac{(\mu - x_O)(2x_L-x_O-X_P)}{(x_L-\mu)(x_P-x_O)} $$
+
+$$ w = \frac{v(x_P-\mu)}{\mu-x_O} $$
 Beta Distribution (PERT): 
 
 Mean: $\mu = \frac{O + 4M + P}{6}$
@@ -40,4 +43,6 @@ Standard Deviation: $\sigma = \frac{P-O}{6}$
 
 [^fn1]: Project Management Institute. (2017). A guide to the project management body of knowledge (PMBOK guide). Newtown Square, PA: Project Management Institute.
 
-[^fn2]riskamp.com. (2019). The beta-PERT Distribution. [online] Available at: https://www.riskamp.com/beta-pert [Accessed 22 Sep. 2019].
+[^fn2]: riskamp.com. (2019). The beta-PERT Distribution. [online] Available at: https://www.riskamp.com/beta-pert [Accessed 22 Sep. 2019].
+
+[^fn3]: Vose, D. (2008). Risk analysis: a quantitative guide. John Wiley & Sons.
