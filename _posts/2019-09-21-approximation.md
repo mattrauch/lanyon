@@ -33,25 +33,26 @@ $$ \mu = \frac{a + \lambda b+c }{\lambda + 2} $$
 So lets plug in some numbers here and start modeling this in `R`. For our model, lets say we have an activity that we estimate to cost $$ a=200 $$, $$ b=600 $$, $$ c=1500 $$.
 
 ~~~R
-# Define inputs
+set.seed(1234)
 a = 200 # optimistic
 b = 600 # most likely
 c = 1500 # pessimistic
 lambda = 4 # arbitrary
 ~~~
 
-To convert the parameters we have into a beta-smoothed PERT distribution, we need to define our shape parameters and generate some values. This can be achieved by calculating the shape parameters per Vose's methodology[^fn3] and then scaling each sample by the range and offsetting by the optimistic estimate (minimum) [^fn2]. We need to generate at least $$ 10000 $$ samples to get a good idea of the shape of the distribution. I also took the liberty of rounding to two decimal places to make everything a bit more readable.
+To convert the parameters we have into a beta-smoothed PERT distribution, we need to define our shape parameters and generate some values. This can be achieved by calculating the shape parameters per Vose's methodology[^fn3] and then scaling each sample by the range and offsetting by the optimistic estimate (see footnote link for their `R` code)[^fn2]. We need to generate at least $$ 10000 $$ samples to get a good idea of the shape of the distribution. I also took the liberty of rounding to two decimal places to make everything a bit more readable.
 
 ~~~R
 pert <- function(a, b, c, lambda) {
   mu = (a + lambda * b + c) / (lambda + 2)
   a1 = ((mu - a) * (2 * b - a - c)) / ((b - mu) * (c - a))
   a2 = (a1 * (c - mu)) / (mu - a)
-  return(round((rbeta(10000, a1, a2) * (c - a) + a), digits = 2))
+  data = rbeta(10000, a1, a2)
+  return(round(data * (c - a) + a, digits = 2))
 }
 ~~~
 
-If you run the function and get the quantiles (I chose $$ .05, .50, .95 $$) you get `5% 328.387 50% 664.69 95% 1096.763`.
+If you run the function and get the quantiles (I chose $$ .05, .50, .95 $$) you get `5% 323.94 50% 663.6 95% 1100.46`.
 
 ![Output]({{ "/assets/pert.png" | absolute_url }})
 
@@ -63,7 +64,7 @@ tridf <- round(rtri(n = 10000, a, c, b), digits = 2)
 quantile(tridf, c(.05, .50, .95)) 
 ~~~
 
-We get the following quantiles `5% 365.045 50% 734.795 95% 1259.287`.
+We get the following quantiles `5% 361.325 50% 735.87 95% 1259.053`.
 
 ![Output]({{ "/assets/tri.png" | absolute_url }})
 
@@ -81,7 +82,7 @@ pmi <- round(rnorm(10000, mean, sd), digits = 2)
 quantile(pmi, c(.05, .50, .95))  
 ~~~
 
-This gets us quantiles of `5% 320.647 50% 685.885 95% 1033.246`, as well as a nice parametric distribution.
+This gets us quantiles of `5% 331.7395 50% 684.34 95% 1035.309`, as well as a nice parametric distribution.
 
 ![Output]({{ "/assets/pmi.png" | absolute_url }})
 
@@ -90,9 +91,9 @@ To sum it up, we have the following results:
 
 |     |   PMI   |   PERT   |    Triangular   |
 |:---:|:-------:|:--------:|:--------:|
-|  5% |  320.647 |  328.387 |  365.045 |
-| 50% |  685.885 |   664.69 |  734.795 |
-| 95% | 1033.246 | 1096.763 | 1259.287 |
+|  5% |  331.7395 |  323.94 |  361.325 |
+| 50% |  684.34 |   663.6 |  735.87 |
+| 95% | 1035.309 | 1100.46 | 1259.053 |
 
 So which method is the most accurate? That's hard to say, I was surprised the PMI methodology got similar results to the PERT beta smoothed methodology. All methods ranked probability of the extremes very low, but all three methodologies showed their bias towards the most likely scenario. Given that expert input would place some probability at both the optimistic and pessimistic, it would be interesting to compare the modeled probability with that of the expert. I would imagine its probably not $$ .001 $$ ([see this chart](https://flowingdata.com/2018/07/06/how-people-interpret-probability-through-words/ "How people interpret probability through words") on how people interpret probabilistic words). Given the results, I would probably recommend padding the expert estimates to capture them within the model to the probabilistic interval they would attribute them to.
 
