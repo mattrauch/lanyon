@@ -43,11 +43,11 @@ lambda = 4 # arbitrary
 To convert the parameters we have into a beta-smoothed PERT distribution, we need to define our shape parameters and generate some values. This can be achieved by calculating the shape parameters per Vose's methodology[^fn3] and then scaling each sample by the range and offsetting by the optimistic estimate (minimum) [^fn2]. We need to generate at least $$ 10000 $$ samples to get a good idea of the shape of the distribution. I also took the liberty of rounding to two decimal places to make everything a bit more readable.
 
 ~~~R
-pert <- function(a, b, c, lambda){
-    mu = (a + lambda * b + c) / (lambda + 2)
-    a1 = ((mu - a) * (2 * b - a- c)) / ((b - mu) * (c - a))
-    a2 = (a1 * (c - mu)) / (mu - a)
-    return(round((rbeta(10000, a1, a2 ) * (c-a) + a ),digits=2))
+pert <- function(a, b, c, lambda) {
+  mu = (a + lambda * b + c) / (lambda + 2)
+  a1 = ((mu - a) * (2 * b - a - c)) / ((b - mu) * (c - a))
+  a2 = (a1 * (c - mu)) / (mu - a)
+  return(round((rbeta(10000, a1, a2) * (c - a) + a), digits = 2))
 }
 ~~~
 
@@ -59,8 +59,8 @@ To get the triangular distribution with our parameters, you can simply use the `
 
 ~~~R
 library(EnvStats)
-tridf <- round(rtri(n = 10000, a, c, b),digits=2)
-quantile(tridf, c(.05, .50, .95))
+tridf <- round(rtri(n = 10000, a, c, b), digits = 2)
+quantile(tridf, c(.05, .50, .95)) 
 ~~~
 
 We get the following quantiles `5% 365.045 50% 734.795 95% 1259.287`.
@@ -77,8 +77,8 @@ PMI proposes using z scores to determine where 95% of the values would lie given
 ~~~R
 mean = (a + (4 * b) + c) / 6
 sd = ((c - a) / 6)
-pmi <- rnorm(10000, mean, sd)
-quantile(pertdf, c(.05, .50, .95)) 
+pmi <- round(rnorm(10000, mean, sd), digits = 2)
+quantile(pmi, c(.05, .50, .95))  
 ~~~
 
 This gets us quantiles of `5% 320.647 50% 685.885 95% 1033.246`, as well as a nice parametric distribution.
