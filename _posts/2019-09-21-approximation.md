@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Approximation
+title: PERT, Beta, & Three-Point Approximation
 mathjax: true
 ---
 
