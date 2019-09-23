@@ -68,12 +68,13 @@ We get the following quantiles `5% 361.325 50% 735.87 95% 1259.053`.
 
 ![Output]({{ "/assets/tri.png" | absolute_url }})
 
-Using the PMI methodology, we are givent he following formulas[^fn1]:
+Using the PMI methodology, we are given the following formulas[^fn1]:
 
 $$ \text{mean} = \frac{a+4b+c}{6} $$
+
 $$ \text{sd} = \frac{c-a}{6} $$
 
-PMI proposes using z scores to determine where 95% of the values would lie given a normal distribution, using the mean $$ \mu $$ calculated above and a standard deviation $$ \sigma $$ defined above. To keep things simple, we will use the same quantile methodology as before.
+PMI proposes using z scores to determine where 95% of the values would lie given a normal distribution, using the mean calculated and standard deviation defined above. To keep things simple, we will use the same quantile methodology as before.
 
 ~~~R
 mean = (a + (4 * b) + c) / 6
@@ -95,7 +96,7 @@ To sum it up, we have the following results:
 | 50% |  684.34 |   663.6 |  735.87 |
 | 95% | 1035.309 | 1100.46 | 1259.053 |
 
-So which method is the most accurate? That's hard to say, I was surprised the PMI methodology got similar results to the PERT beta smoothed methodology. All methods ranked probability of the extremes very low, but all three methodologies showed their bias towards the most likely scenario. Given that expert input would place some probability at both the optimistic and pessimistic, it would be interesting to compare the modeled probability with that of the expert. I would imagine its probably not $$ .001 $$ ([see this chart](https://flowingdata.com/2018/07/06/how-people-interpret-probability-through-words/ "How people interpret probability through words") on how people interpret probabilistic words). Given the results, I would probably recommend padding the expert estimates to capture them within the model to the probabilistic interval they would attribute them to.
+So which method is the most accurate? That's hard to say. I was surprised the PMI methodology got similar results to the PERT beta smoothed methodology, but I guess that is [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem) in action. All methods ranked probability of the extremes very low, but all three methodologies showed their bias towards the most likely scenario. Given that expert input would place some probability at both the optimistic and pessimistic, it would be interesting to compare the modeled probability with that of the expert. I would imagine its probably not $$ .001 $$ ([see this chart](https://flowingdata.com/2018/07/06/how-people-interpret-probability-through-words/ "How people interpret probability through words") on how people interpret probabilistic words). Given the results, I would probably recommend padding the expert estimates to capture them within the model to the probabilistic interval they would attribute them to.
 
 Having said that, all of this is subject to the quality of the estimates, which probably contains enough margin or error that the nuance in the equations is negligible. There is some guidance on the use of these formulas. Vose points to some research from Stanton & Farnum that to use the PMI standard deviation methodology, then the mode cannot lie more than 13% of the range from the distance to the optimistic or pessimistic value[^fn5]. Thus, highly skewed estimates are subject to increased error in estimation.
 
