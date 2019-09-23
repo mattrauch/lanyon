@@ -50,7 +50,7 @@ THw =[] # worst case throughput
 THb = [] # best case throughput
 ~~~
 
-The last step before the results is to iteratively calculate the throughput values. Python and R (or any other language for that matter) can handle this task much more elegantly than say, Microsoft Excel because we can store our results as arrays and simply graph them in a single chart. With this step, we introduce three new formulas.
+The last step before the results is to iteratively calculate the throughput values. Python and R (or any other language for that matter) can handle this task much more elegantly than say, Microsoft Excel because we can store our results as arrays and simply graph them in a single chart. With this step, we introduce three new formulas[^fn2].
 
 $$\text{TH}_{pwc}=\frac{w}{w_0+w-1}r_b$$
 
