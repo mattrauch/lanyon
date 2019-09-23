@@ -6,20 +6,10 @@ mathjax: true
 
 I recently took a Project Management Professional (PMP) course that covered cost and schedule estimation. According to Project Management Insitute's (PMI) Project Management Body of Knowledge (PMBOK), statistically based estimate methods can be either parametric estimation or three-point estimate[^fn1].
 
-Parametric estimation, as you may have guessed, involve using the normal distribution. However, the methodology in PMBOK is not so scientific. Parametric estimation in their case is simply using linear estimation to predict a future cost. An example of this would be if Project X used $10$ widgets at a cost of $\$10$ each, and our project uses $20$ widgets, we estimate the cost to be $\$20$. Not so scientific, but certainly appropriate in certain situations.
+Parametric estimation, as you may have guessed, involve using the normal distribution. However, the methodology in PMBOK is not so scientific. Parametric estimation in their case is simply using linear estimation to predict a future cost. An example of this would be if Project X used $$ 10 $$ widgets at a cost of $$ 10 $$ each, and our project uses $$ 20 $$ widgets, we estimate the cost to be $$ 20 $$. Not so scientific, but certainly appropriate in certain situations.
 
 What peaked my interest was the the alternative methodoly, known as a three-point estimate. The three point estimate can be broken into two categories, one using the triangular distribution, with the other using the beta distribution (PERT method).
 
-### Triangular Distribution
-
-Triangular Distribution: 
-Mean: 
-$E = \frac{(o + m + p )}{3}$
-
-Average: 
-$E = \frac{(o + m + p )}{3}$
-
-### Beta Distribution
 For the PERT methodology, the text suggest estimating parameters to produce a beta distribution which can be approximated by the normal distirbution. In effect, you estimate a mean and standard deviation from your optimistic, most-likely, and pessimistic estimates and use z scores to draw a tolerance interval. By it's very definition (an every example they gave in the course), the three-points would produce a assymetric distribution—otherwise, why not just estimate with a mean and standard deviation? 
 
 What wasn't clear to me was how to bridge the gap between using parametric estimators to characterize asymetric distributions. After some research, I ran into a book[^fn2], and a corresponding website[^fn3] that explained how the PERT distribution is derived.
@@ -38,7 +28,7 @@ $$ a_2 = \frac{a_1(c-\mu)}{\mu-a}  $$
 
 $$ \mu = \frac{a + \lambda b+c }{\lambda + 2} $$
 
-**Note**: $$ \lambda $$ is usually 4, but from my research seems arbitrarily chosen and serves the sole purpose of weighing the most likely estimate higher than the other two.
+**Note**: $$ \lambda $$ is usually $$ 4 $$, but from my research seems arbitrarily chosen and serves the sole purpose of weighing the most likely estimate higher than the other two.
 
 So lets plug in some numbers here and start modeling this in `R`. For our model, lets say we have an activity that we estimate to cost $$ a=200 $$, $$ b=600 $$, $$ c=1500 $$.
 
