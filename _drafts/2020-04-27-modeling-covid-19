@@ -1,3 +1,29 @@
+---
 layout: post
 title: Modeling COVID-19
+mathjax: true
 ---
+
+
+COVID-19 has brought statistical modeling to the forefront of our lives. Confronted with a poorly understood global epidemic, we hear the mantra of "flattening the curve". Many believe that this strategy aims to minimize the amount of sick individuals, but this is actually not the case. At it's core, the concept of flattening the curve is focused on minimizing the amount of medical triage needed due to under-capacity of resources. When a patient becomes particularly ill with COVID-19, treatment typically requires quarantine in an intensive care unit with a ventilator. Under normal circumstances, hospitals typically have the resources required to treat these patients, but with an abrupt influx of patients needing these specific resources, some hospitals will run out of capacity and forced to make triage decisions. While the purpose of triage is to balance medical resources with medical need, some individuals end up not getting the care they need, drastically reducing survival rates.
+
+This is where the SEIR Model comes in, standing for *susceptible*, *exposed*, *infected*, and *recovered*. Given a finite population and some assumptions, we can model the infection rate over time and get an idea of how this aligns with hospital capacity. With this information, we can then try to solve for a specific peak rate that is below the capacity of the system, and then develop mitigations policies to try to implement this is reality. Let's take a look at the SEIR Model.
+
+$$\begin{aligned}
+\frac{dS}{dt} = -\frac{\beta SI}{N} \\
+\frac{dE}{dt }=  -\frac{\beta SI}{N}-\sigma E \\
+\frac{dI}{dt} = -\sigma E - \gamma I \\
+\frac{dR}{dt}=\gamma I
+\end{aligned}$$
+
+
+
+
+---
+**HEALTH DISCLAIMER** 
+
+This article provides general information and discussions about health, policy, and related subjects. The information and other content provided in this article, or in any linked materials, are not intended and should not be construed as medical advice, nor is the information a substitute for professional medical expertise or treatment.
+
+If you or any other person has a medical concern, you should consult with your health care provider or seek other professional medical treatment. Never disregard professional medical advice or delay in seeking it because of something that have read on this blog or in any linked materials. If you think you may have a medical emergency, call your doctor or emergency services immediately.
+
+The opinions and views expressed on this website have no relation to those of any academic, hospital, health practice or other institution.
