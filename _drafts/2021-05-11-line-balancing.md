@@ -27,31 +27,28 @@ Line balancing can be done by hand, and frankly is probably quicker in most case
 Now, there are a couple options for solving MIP problems, and optimization in general. There's [PuLP](https://github.com/coin-or/pulp), [CPLEX](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=cplex), [Gurobi](https://www.gurobi.com/documentation/9.1/quickstart_mac/cs_python.html), and many more free and costly options. Today, we'll be using Google's [OR-Tools](https://developers.google.com/optimization). Along with this, we also need pandas and numpy. Let's get started.
 
 ~~~python
-!pip install ortools
 from ortools.linear_solver import pywraplp
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 ~~~
 
 ## Line Balancing Problem
 
 Let's imagine an eight step process to build a widget that we are balancing. In addition to this, our factory is available for eight hours a day, and we have a demand of 50 widgets per day. Times below are in minutes.
 
-| Process | $$ \text{CT} $$ | Dependency |
-|:-------:|:---------------:|:----------:|
-| A | 2.7 | - |
-| B | 4.8 | A |
-| C | 4.5 | B |
-| D | 3.6 | B |
-| E | 4.2 | C |
-| F | 2.3 | D, E |
-| G | 1.7 | F, G |
-| H | 4.9 | G |
+![process flow](assets/processflow.png)
 
 ~~~python
 process = ['A','B','C','D','E','F','G','H']
 ct = [2.7, 4.8, 4.5, 3.6, 4.2, 2.3, 1.7, 4.9]
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(process,ct)
+plt.show()
 ~~~
+
+![process bar](assets/chart1.png)
 
 ## Takt Time & Minimum Stations
 
@@ -78,9 +75,8 @@ Wm = round(sum(ct)/takt, 0)
 
 The absolute minimum amount of stations is 5 based on a $$ \text{Takt}=9.6 $$. Now, you may have solved for $$ W_m $$ and got something like $$ 2.989583 $$. We rounded that up to $$ 3 $$ in this case because, well, good luck with your $$ 2 + 0.989583 $$ stations. Herein lies the reason why we are using MIP to solve this problem. Given our constraints of, well, reality, we need to use whole numbers, or integers when solving this equation. In a normal LP, we can in fact, optimize to $$ 2.989583 $$ stations, but that's not a practical solution we can employ in reality. In our problem, we deal with whole stations, and entire process steps, no more and no less. MIP allows us to solve with integers, which will give us nice whole numbers that we can use in real life.
 
-## Objective Equation
-
-We've talked about minimizing a couple things now, specifically $$ r_b $$ and $$ W $$. In order to use MIP to solve this problem, we need to translate our line balancing issue into and equation that can be minimized. We know there can be a minimum of 5 stations, and a maximum of 8 in this system (because in a worse case each process step is at it's own station). This leads us to create a set of binary variables that indicate which processes are at which station.
+## Constraints
+We've talked about minimizing a couple things now, specifically $$ r_b $$ and $$ W $$. In order to use MIP to solve this problem, we need to translate our line balancing issue into and equation that can be minimized. We know there can be a minimum of 3 stations, and a maximum of 8 in this system (because in a worse case each process step is at it's own station). This leads us to create a set of binary variables that indicate which processes are at which station.
 
 $$
 X_{ij} =
