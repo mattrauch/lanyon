@@ -36,6 +36,8 @@ In our use case, the process is either happening at that station, or not, and it
 
 Let's imagine an eight step process to build a widget that we are balancing. In addition to this, our factory is available for eight hours a day, and we have a demand of 50 widgets per day. Times below are in minutes.
 
+**Note:** You're probably wondering why I labeled the process steps $$ y_0, y_1, \dots, y_7 $$. This was out of convention to make it easier to align with the zero-based array indexing in `Python`. This way, ``y[0]`` $$= y_0$$ and not $$ y_1 $$. You'll notice this convention carries into the variable names in our mixed integer program. I found it easier to wrap my mind around when converting from array indexes to finding the actual value I was looking for.
+
 ![process flow](assets/processflow.png)
 
 Before we begin entering the data into our program, let's pull in the necessary packages and initialize our solver. We are going to use [SCIP](https://www.scipopt.org/), but their are other options.
@@ -106,28 +108,7 @@ for i in range(len(process)):
     y[i] = solver.IntVar(0, infinity, 'y%i' % i)
 ~~~
 
-Next up, we want to put in the sequence of tasks as a constraint. Since we are using integers, we can assign each unique process step a sequential value to ensure that we don't get things out of order. By using the sum of these values, we can, in turn, create a simple way to ensure tasks don't get assigned to stations in the wrong order. For example, we can make sure Task 1 is before Task 2 with the following:
-
-$$ Y_0 - Y_1 \leq 0 $$
-
-$$ Y_0 = 1x_{00} + 2x_{01} + 3x_{02} + 4x_{03} + 5x_{04} + 6x_{05} + 7x_{06} + 8x_{07} $$
-$$ Y_1 = 1x_{10} + 2x_{11} + 3x_{12} + 4x_{13} + 5x_{14} + 6x_{15} + 7x_{16} + 8x_{17} $$
-
-If $$ Y_0 $$ is assigned $$ X_{0j} $$ tasks where $$ X_{0j} > X_{1j} $$, it will result in $$ Y_0 > Y_1 $$, breaking the constraint. I admit I couldn't find a clever way to automate these constraints, so I just hard-coded them. Let me know if you have a quicker way to do it.
-
-~~~python
-solver.Add(y[0] - y[1] <= 0)
-solver.Add(y[0] - y[2] <= 0) 
-solver.Add(y[1] - y[3] <= 0) 
-solver.Add(y[1] - y[4] <= 0)
-solver.Add(y[2] - y[4] <= 0)
-solver.Add(y[3] - y[5] <= 0) 
-solver.Add(y[4] - y[6] <= 0) 
-solver.Add(y[5] - y[6] <= 0) 
-solver.Add(y[6] - y[7] <= 0) 
-~~~
-
-Next up, we need to create a binary variable for each $$ X_{ij} $$ where $$X_{ij}= 1 $$ if station $$ i $$ is assigned process $$ j $$. We have eight process steps that can be performed at eight possible stations, resulting in 64 variables.
+Following this, we need to create a binary variable for each $$ X_{ij} $$ where $$X_{ij}= 1 $$ if station $$ i $$ is assigned process $$ j $$. We have eight process steps that can be performed at eight possible stations, resulting in 64 variables.
 
 $$
 X_{ij} =
@@ -147,62 +128,107 @@ for i in range(len(process)):
         a += 1
 ~~~
 
-For our next constraint, we want to make sure each station doesn't have more than the takt time worth of work at the station. The equation is the sum of each task $$ j $$ iterated across station $$ i $$. This was another one that I wasn't clever enough to loop through, so it's about half hard-coded.
+Next up, we want to put in the sequence of tasks as a constraint. Since we are using integers, we can assign each unique process step a sequential value to ensure that we don't get things out of order. By using the sum of these values, we can, in turn, create a simple way to ensure tasks don't get assigned to stations in the wrong order. For example, we can make sure Task 1 is before Task 2 with the following:
+
+$$ Y_0 - Y_1 \leq 0 $$
+
+$$ 1x_{00} + 2x_{01} + 3x_{02} + 4x_{03} + 5x_{04} + 6x_{05} + 7x_{06} + 8x_{07} = Y_0$$
+$$ 1x_{10} + 2x_{11} + 3x_{12} + 4x_{13} + 5x_{14} + 6x_{15} + 7x_{16} + 8x_{17} = Y_1 $$
+
+If $$ Y_0 $$ is assigned $$ X_{0j} $$ tasks where $$ X_{0j} > X_{1j} $$, it will result in $$ Y_0 > Y_1 $$, breaking the constraint. The code below gets us our $$ Y_i $$ constraints.
+
+~~~python
+for i in range(len(seq)): # sequence constraints
+    solver.Add(y[seq[i,0]] - y[seq[i,1]] <= 0)
+~~~
+
+To make sure our $$ Y_i $$ values are reflective of the process steps contained in them, we add the following code to reflect the constraint.
 
 $$
-\sum_{i} y_{ij}= 1,\space \forall j 
+\sum_{j} j\times x_{ij}= Y_i,\space \forall i
 $$
 
 ~~~python
-for i in range(len(process)):
-        solver.Add(x[((i*7)+0+(i*1))] + 
-                   x[((i*7)+1+(i*1))] + 
-                   x[((i*7)+2+(i*1))] + 
-                   x[((i*7)+3+(i*1))] + 
-                   x[((i*7)+4+(i*1))] + 
-                   x[((i*7)+5+(i*1))] + 
-                   x[((i*7)+6+(i*1))] + 
-                   x[((i*7)+7+(i*1))] == 1)
+for i in range(len(process)): # build big M to enforce sequencing
+    constraint_expr = \
+    [(j+1) * x[((i*7)+j+(i*1))] for j in range(len(process))]
+    solver.Add(sum(constraint_expr) == y[i])
 ~~~
 
-For our next constraint, we want to make sure each station doesn't have more than the takt time worth of work at the station. The equation is the sum of each task $$ j $$ iterated across station $$ i $$. This was another one that I wasn't clever enough to loop through, so it's about half hard-coded.
+For our next constraint, we want to make sure each station doesn't have more than the takt time worth of work at the station. The equation is the sum of each task $$ j $$ iterated across station $$ i $$.
 
 $$
 \sum_{ij} \text{Cycle Time}_{j}x_{ij} \leq \text{Takt}, \forall i
 $$
 
 ~~~python
-for i in range(len(process)):
-        solver.Add(ct[0]*x[i] + 
-                   ct[1]*x[i+(1*8)] + 
-                   ct[2]*x[i+(2*8)] + 
-                   ct[3]*x[i+(3*8)] + 
-                   ct[4]*x[i+(4*8)] + 
-                   ct[5]*x[i+(5*8)] + 
-                   ct[6]*x[i+(6*8)] + 
-                   ct[7]*x[i+(7*8)] <= takt)
+for i in range(len(process)): # station CT does not exceed takt
+    constraint_expr = \
+    [ct[j] * x[i+(j*8)] for j in range(len(process))]
+    solver.Add(sum(constraint_expr) <= takt)
 ~~~
 
+Last, we want to pull the whole program together with our global variable to minimize, $$ z $$. In the same way we incremented the $$ Y_i $$ with process steps, we will create a constraint that increments $$ z $$ ever time a station is "activated" with a task. Since our objective is to minimize the amount of stations, our objective function is quite simple:.
 
 $$
-
 \begin{aligned}
 & \underset{z}{\text{minimize}}
 && z \\
-&\text{subject to}
-&& \sum_{i} y_{ij} = 1,\space \forall j  \\
-&& \sum_{ij} \text{Cycle Time}_{j}x_{ij} \leq \text{Takt}, \forall i \\
-&& y_0 - y_1 \leq 0 \\
-&& y_0 - y_2 \leq 0 \\
-&& y_1 - y_3 \leq 0 \\
-&& y_1 - y_4 \leq 0 \\
-&& y_2 - y_4 \leq 0 \\
-&& y_3 - y_5 \leq 0 \\
-&& y_4 - y_6 \leq 0 \\
-&& y_5 - y_6 \leq 0 \\
-&& y_6 - y_7 \leq 0 \\
-&& x_{ij}\in \{0,1\} \\
-&& y_{i},z\in \{0,\infty\} \\
 \end{aligned}
+$$
+
+To initialize this variable, we need to create a new integer with `z = solver.IntVar(0, infinity, 'z')`.
+
+In the previous step, we talked about creating a constraint that links the activation of $$ Y_i $$ to $$ z $$. This is achieved rather simply.
 
 $$
+Y_i \leq z,\space \forall i
+$$
+
+~~~python
+for i in range(len(process)):
+    solver.Add(y[i] <= z)
+~~~
+
+With that, we've coded in our entire problem, and are ready to optimize. This is as simple as executing `solver.Minimize(z)`. To get the output, we run the following:
+
+~~~python
+status = solver.Solve()
+if status == pywraplp.Solver.OPTIMAL:
+    print('Number of Stations =', solver.Objective().Value())
+else:
+    print('The problem does not have an optimal solution.')
+~~~
+
+Great, we know that we can run this process with 4 stations, which is half of what we previously had. Now, let's visualize what the new process looks like.
+
+~~~python
+station = []
+task = []
+names = ['Station %s' % s for s in station]
+
+for j in range(len(process)):
+    station = np.append(station, ['Station %s'
+                        % int(y[j].solution_value())], axis=0)
+    task = np.append(task, [y[j].name()], axis=0)
+
+line = pd.DataFrame({'Task': task, 'CT': ct, 'Station': station})
+
+ax = line.pivot('Station', 'Task', 'CT').plot(kind='bar', stacked=True)
+ax.axhline(y=takt)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.show()
+
+util = sum(ct) / (takt * solver.Objective().Value())
+print ('Utilization:', util)
+~~~
+
+Awesome, now we can see the new sequence of process steps, and layout of the line. Our utilization is up to almost 75%, almost double from our baseline and right where we want the system running at.
+
+![process bar](assets/optimized.png)
+
+I hope you found this tutorial educational, and I hope you can use the code to automate your next line balancing activity. Outside of inputing cycle time and sequence, you should be able to simply add or subtract process steps and the rest of the program should work automatically. Let me know if you have a success story!
+
+The framework and approach for this post was adapted from Radsdale's (2014) *Spreadsheet modeling and decision analysis* for use in `Python` with Google's `OR-Tools`. Reference below.
+
+Ragsdale, Cliff. *Spreadsheet modeling and decision analysis: a practical introduction to business analytics.* Cengage Learning, 2014.
