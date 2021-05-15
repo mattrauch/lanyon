@@ -14,8 +14,8 @@ Fantastic question. You shouldn't just listen to what people say on the internet
 
 Line balancing is all about maximizing output to the takt time, but why is this important? When we think about a production line, it is like an accordion. We know from Little's Law that at steady state, a system outputs at the bottleneck rate, $$ r_b $$. In its fastest, but likely least balanced form, each distinct process step has its own workstation. This leads to the most workstations, but the lowest $$ r_b $$. In The process below, the system will produce a part every 4.9 minutes at the last station. However, you notice that there is quite some space between the top of each bar and the takt time of 9.6. This is where utilization is important. To minimize costs, we want to create product at the speed we consume it, or the taxt time. No more, no less. If the takt time is below $$ r_b $$, we can look at combining steps to reduce the number of workstations and increase utilization. As takt decreases towards $$ r_b $$, we can continue to add process steps, unfolding the line with more stations, to lower the $$ r_b $$ of the system and still meet the takt.
 
-<p align=”center”>
-  <img src=”assets/chart1.png”>
+<p align="center">
+  <img src="assets/chart1.png">
 </p>
 
 While performing line balancing seems simple, this quickly gets complicated as process dependencies emerge and meaningful reductions in cycle times may require significant re-engineering of the product or process. It is not always as simple as adding more labor or stations to the system. After all, to minimize WIP, we want to minimize the number of stations $$ W $$, and to reduce costs, we want to maximize line utilization. With this simple objective and constraints, an optimization problem is born.
@@ -46,8 +46,8 @@ Let us imagine an eight-step process to build a widget that we are balancing. Be
 
 **Note:** You're probably wondering why I labeled the process steps $$ y_0, y_1, \dots, y_7 $$. This was to align with the zero-based array indexing in `Python`. This way, ``y[0]`` $$= y_0$$ and not $$ y_1 $$. You will notice this convention carries into the variable names in our mixed integer program. I found it easier to wrap my mind around when converting between array indexes and the actual variable I was looking for.
 
-<p align=”center”>
-  <img src=”assets/processflow.png”>
+<p align="center">
+  <img src="assets/processflow.png">
 </p>
 
 Before we enter the data into our program, let us pull in the packages and initialize our solver. We are going to use [SCIP](https://www.scipopt.org/), but there are other options.
@@ -121,8 +121,8 @@ ax.axhline(y=takt)
 plt.show()
 ~~~
 
-<p align=”center”>
-  <img src=”assets/chart1.png”>
+<p align="center">
+  <img src="assets/chart1.png">
 </p>
 
 We would like to have our cycle time at each station closer to the takt time to increase utilization. This will ensure that widgets exit the system at a rate equal to or faster than the demand, ensuring we keep our customers happy. A $$ r_b > \text{Takt}  $$ doesn't make enough parts in the day (too slow), and a $$ r_b < \text{Takt}  $$ produces parts at a rate faster than we need them. Ideally $$ r_b = \text{Takt}  $$, but we try to shoot for a little below to be safe.
@@ -198,7 +198,7 @@ for i in range(len(process)): # station CT does not exceed takt
     solver.Add(sum(constraint_expr) <= takt)
 ~~~
 
-Another requirement is that we only performed each process at one station. We express this as 
+Another requirement is that we only performed each process at one station. We express this as
 
 $$
 \sum_{i} X_{ij}= 1,\space \forall j
@@ -301,8 +301,8 @@ print ('Utilization:', util)
 
 Outstanding, now we can see the new sequence of process steps and layout of the line. Our utilization is up to almost 75%, almost double from our baseline and right where we want the system running at.
 
-<p align=”center”>
-  <img src=”assets/optimized.png”>
+<p align="center">
+  <img src="assets/optimized.png">
 </p>
 
 I hope you found this tutorial educational, and I hope you can use the code to automate your next line balancing activity. Outside of inputting cycle time and sequence, be able to simply add or subtract process steps and the rest of the program should work automatically. Let me know if you have a success story!
