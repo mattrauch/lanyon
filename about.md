@@ -6,7 +6,6 @@ My professional passion in continuous improvment stems from an interest in stati
 
 I admit that I don't have anything profound to contribute, as most of these posts are just analysis of someone else's good idea(s). I'm a believer in the open-source community, and as such, my code on this site and in my GitHub repository is licensed under GNU Affero General Public License v3.0 (GNU AGPLv3), unless otherwise specified.
 
-
 Speaking of open-source, here are some fun facts about the setup of this project:
 
 * Theme forked from [poole/lanyon](https://github.com/poole/lanyon)
