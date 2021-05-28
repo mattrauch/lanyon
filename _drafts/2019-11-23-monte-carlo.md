@@ -1,5 +1,7 @@
+---
 layout: post
-title: Modeling with Monte Carlo
+title: Monte Carlo
+mathjax: true
 ---
 
 In the business and manufacturing world, we are confronted with problems that require us to make estimations. Generally, these are planning related---such as how many people will be needed, how much time will something take, ecetera. More often than not, these questions can be answered with sufficient precision through paramateric estimation, that is to say simply multipling the average time the expected frequency. Today, we will be rejecting such simplicity to utilize a toolset from the Monte Carlo methods.
